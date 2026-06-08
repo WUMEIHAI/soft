@@ -1,0 +1,2259 @@
+<html>
+<!--
+<script>
+const words = ["富强","民主","文明","和谐","自由","平等","公正","法治","爱国","敬业","诚信","友善"];
+let index = 0;
+
+document.addEventListener("click", (e) => {
+  const span = document.createElement("span");
+  span.textContent = words[index];
+  index = (index + 1) % words.length;
+
+  span.style.cssText = `
+    z-index:9999;
+    position:absolute;
+    font-weight:bold;
+    color:#fcaaaa;
+    left:${e.pageX}px;
+    top:${e.pageY - 20}px;
+    user-select:none;
+    pointer-events:none;
+    transition: all 1.5s ease-out;
+    font-size: 18px;
+  `;
+
+  document.body.appendChild(span);
+
+  requestAnimationFrame(() => {
+    span.style.top = `${e.pageY - 150}px`;
+    span.style.opacity = 0;
+  });
+
+  setTimeout(() => span.remove(), 1500);
+});
+</script>
+-->
+<head>
+    <!-- 设置字符编码为UTF-8，支持多语言字符显示 -->
+    <meta charset="UTF-8" />
+    <!-- 设置页面标题 -->
+    <title data-i18n="navTitle">建发股份软件下载中心</title>
+    <!-- 引入图片作为网站图标 -->
+    <link rel="icon" href="images\cnd.png" type="image/png">
+    <!-- 移动端视图配置：设置视口宽度为470px，禁止用户缩放，目标像素密度为320dpi -->
+    <meta name="viewport" content="width=470,user-scalable=0, target-densitydpi=320" />
+    <!-- 苹果设备图标配置：指定触摸图标路径 -->
+    <link rel="apple-touch-icon" href="images/logo.png" />
+    <!-- 引入外部样式文件：基础样式和3D图片效果样式 -->
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/atvImg.css" />
+    <!-- 自定义内嵌样式：针对页面特定元素（评论区、统计区、网格布局等）的样式 -->
+    <style>
+        /* 滚动容器：核心是隐藏溢出内容，实现左右遮罩效果 */
+        .led-scroll-container {
+            /* 1. 关键：隐藏容器外的所有内容，实现文字的"进出"视觉 */
+            overflow: hidden;
+            /* 3. 容器尺寸，可自定义 */
+            width: 1200px;
+            height: 40px;
+            /* 4. 相对定位，作为遮罩层和滚动元素的参考 */
+            position: relative;
+            /* 5. 背景色*/
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+            /* 左右遮罩层：实现文字"逐字"消失/出现的渐变效果，而非生硬截断 */
+            .led-scroll-container::before,
+            .led-scroll-container::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                height: 100%;
+                width: 100px;
+                z-index: 2;
+                pointer-events: none;
+            }
+
+            /* 右侧遮罩：从透明渐变到背景色，实现文字从右侧逐字出现 */
+            .led-scroll-container::after {
+                right: 0;
+                /* 渐变方向：从右到左，透明→背景色 */
+                background: linear-gradient(to left, #ffffff, transparent);
+            }
+
+            /* 左侧遮罩：从背景色渐变到透明，实现文字到左侧逐字消失 */
+            .led-scroll-container::before {
+                left: 0;
+                /* 渐变方向：从左到右，背景色→透明 */
+                background: linear-gradient(to right, #ffffff, transparent);
+            }
+
+        /* 滚动文字容器：承载文字并实现动画 */
+        .led-scroll-text {
+            /* 1. 绝对定位，方便控制滚动位置 */
+            position: absolute;
+            top: 100%;
+            right: -50%; /* 初始位置：完全在容器右侧外部（准备进入） */
+            transform: translateY(-100%);
+            /* 2. 文字样式 */
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #c50707;
+            letter-spacing: 1px; /* 字间距 */
+            /* 3. 关键：无限循环滚动动画 */
+            animation: ledScroll 20s linear infinite;
+            white-space: nowrap; /* 禁止文字换行 */
+        }
+
+        /* 滚动动画关键帧：从右侧外部移动到左侧外部 */
+        @keyframes ledScroll {
+            0% {
+                /* 初始位置：完全在容器右侧（右移80%） */
+                right: -80%;
+            }
+
+            100% {
+                /* 结束位置：完全在容器左侧（左移100%，文字全部移出） */
+                right: 100%;
+            }
+        }
+
+        @media screen and (min-width: 864px) and (max-width: 1152px) {
+            .grid {
+                width: 864px;
+            }
+        }
+
+        @media screen and (min-width: 1153px) and (max-width: 1500px) {
+            .grid {
+                width: 1152px;
+            }
+        }
+
+        @media screen and (min-width: 1501px) {
+            .grid {
+                width: 1440px;
+            }
+        }
+
+        #header {
+            height: 80px;
+            margin-bottom: 0;
+            background-color: transparent;
+        }
+
+            #header .header-content {
+                position: fixed;
+                width: 100%;
+                top: 0;
+                left: 0;
+                height: 80px;
+                box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.1);
+                background: #fff;
+                z-index: 10000;
+            }
+
+            #header .nav-wrapper {
+                width: 90%;
+                height: 100%;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: bold;
+                box-sizing: border-box;
+            }
+
+                #header .nav-wrapper .cnd-logo {
+                    width: 2em;
+                    object-fit: cover;
+                    padding: 10px 5px;
+                    border-radius: 8px;
+                    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+                    vertical-align: middle;
+                }
+
+                #header .nav-wrapper .nav-title {
+                    vertical-align: middle;
+                }
+
+                #header .nav-wrapper .language-select-wrapper {
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                }
+
+                    #header .nav-wrapper .language-select-wrapper::after {
+                        content: '▼';
+                        position: absolute;
+                        right: 0.6em;
+                        top: 50%;
+                        transform: translateY(-60%);
+                        pointer-events: none;
+                        font-size: 0.5em;
+                        color: #666;
+                    }
+
+                    #header .nav-wrapper .language-select-wrapper .language-selector {
+                        appearance: none;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        padding: .5em 1.5em .5em .75em;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        background-color: white;
+                        font-size: 16px;
+                    }
+
+
+        .language-transition {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        /* 评论区域样式：内边距5px、字体大小14px、上下边距、虚线边框 */
+        .comment-wrapper {
+            padding: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-left: 24px;
+            border-width: 1px;
+            border-style: dashed;
+        }
+
+        /* 下载统计区域样式：字体大小14px、上下边距、文字居中 */
+        .clickstat-wrapper {
+            font-size: 14px;
+            /* margin-top: 10px; */
+            /* margin-left: 24px; */
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* 下拉菜单容器 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 按钮样式 */
+        .button {
+            background-color: #f0f0f0;
+            color: #000000;
+            padding: 8px 8px;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+            display: inline-block;
+            font-family: "微软雅黑", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", sans-serif;
+            /* margin: 4px 2px; */
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+
+            .button:hover {
+                background-color: #cecece;
+            }
+
+        /* 下拉菜单内容 */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f0f0f0;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 8px;
+        }
+
+            /* 菜单项悬停样式 */
+            .dropdown-content a:hover {
+                background-color: #cecece;
+                border-radius: 8px;
+            }
+
+            /* 菜单项样式 */
+            .dropdown-content a {
+                color: rgb(0, 0, 0);
+                padding: 8px;
+                text-decoration: none;
+                display: block;
+                border-bottom: 1px solid #ffffff;
+                font-size: 14px;
+                font-family: "微软雅黑", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", sans-serif;
+            }
+
+        /* 鼠标移到按钮时显示菜单 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* 下载量/软件大小数值样式：字体加粗、左右内边距5px */
+        .down-num {
+            font-weight: 500;
+            padding: 0 5px;
+        }
+
+        /* 软件分组网格样式：上下边距10px、上下内边距10px、底部黑色虚线边框（分隔不同软件组） */
+        .grid:not(.category-title) {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        /* 软件下载项容器 */
+        .grid .wrapper {
+            padding: 10px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+            /* gap: 18px; */
+            width: 276px;
+        }
+
+            .grid .wrapper.placeholder {
+                padding: 0;
+                opacity: 0;
+            }
+
+            .grid .wrapper .atvImg {
+                margin: 0 auto;
+                width: 100%;
+                height: 160px;
+            }
+
+            .grid .wrapper .button-wrapper {
+                margin: 18px auto 8px;
+                display: flex;
+                gap: 10px;
+                width: 100%;
+            }
+
+                .grid .wrapper .button-wrapper .dropdown,
+                .grid .wrapper .button-wrapper a,
+                .grid.nav-list .button {
+                    flex: 1;
+                }
+
+                .grid .wrapper .button-wrapper .button {
+                    width: 100%;
+                    font-size: 14px;
+                }
+
+                    .grid .wrapper .button-wrapper .button[data-i18n="localDownload"],
+                    .grid .wrapper .button-wrapper .button[data-i18n="officialDownload"] {
+                        position: relative;
+                        padding-left: 24px;
+                        /* background-color: #2b50b8; */
+                        background-color: #10448b;
+                        color: #fff;
+                        /* font-size: 14px; */
+                    }
+
+                        /* .grid .wrapper .button-wrapper .button[data-i18n="localDownload"], */
+                        /* .grid .wrapper .button-wrapper .button[data-i18n="officialDownload"], */
+                        /* .grid .wrapper .button-wrapper .button[data-i18n="installGuide"], */
+                        /* .grid .wrapper .button-wrapper .button[data-i18n="userGuide"] { */
+
+                        /* } */
+
+                        .grid .wrapper .button-wrapper .button[data-i18n="localDownload"]::before,
+                        .grid .wrapper .button-wrapper .button[data-i18n="officialDownload"]::before {
+                            content: " ";
+                            position: absolute;
+                            left: 18px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 1em;
+                            height: 1em;
+                            background: url(images/download.png) no-repeat center center;
+                            background-size: contain;
+                        }
+
+        html[lang="en"] .grid .wrapper .button-wrapper .button[data-i18n="localDownload"]::before,
+        html[lang="en"] .grid .wrapper .button-wrapper .button[data-i18n="officialDownload"]::before {
+            left: 8px;
+        }
+
+        /* 分类标题加粗 */
+        .category-title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* 当前时间样式：字体大小18px、加粗、黑色字体、底部边距10px */
+        /* #current-time {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+        } */
+
+        /* 自定义提示框样式：绝对定位、深色背景、白色文字、内边距6px 10px、圆角6px、字体大小14px、初始隐藏、禁止指针事件、高层级显示 */
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        #footer {
+            margin-top: 40px;
+            color: rgb(156, 163, 175);
+            background-color: rgba(31, 41, 55, 1);
+        }
+
+            #footer #footer-content #copy {
+                height: unset;
+                padding: 0;
+            }
+
+            #footer #footer-content #contact {
+                position: fixed;
+                box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+                right: 20px;
+                top: 40%;
+                border-radius: 4px;
+                background-color: #fff;
+                z-index: 100;
+            }
+
+                #footer #footer-content #contact:hover::after {
+                    /* #footer #footer-content #contact::after { */
+                    position: absolute;
+                    right: 40px;
+                    top: 0;
+                    content: " ";
+                    width: 190px;
+                    height: 260px;
+                    background: url(images/wecom.png) no-repeat center center;
+                    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+                    border-radius: 4px;
+                }
+
+        html[lang="en"] #footer #footer-content #contact:hover::after {
+            background: url(images/wecom_en.png) no-repeat center center;
+        }
+    </style>
+    <!-- 引入3D图片交互效果的JS文件 -->
+    <script src="./js/atvImg.js"></script>
+</head>
+
+<body onload="init()">
+    <!-- 页面头部区域：包含页面标题相关图标 -->
+    <!-- <div id="header">
+        <img id="face" src="images/彩条.gif" alt="Louie" />
+    </div> -->
+    <!-- 页面头部区域 -->
+    <div id="header">
+        <div class="header-content">
+            <div class="nav-wrapper">
+                <div>
+                    <img src="images/cnd.png" alt="C&D" class="cnd-logo" />&nbsp;&nbsp;
+                    <span class="nav-title" data-i18n="navTitle">建发股份软件下载中心</span>
+                </div>
+                <div class="led-scroll-container">
+                    <div class="led-scroll-text">
+                        <span class="nav-scroll" data-i18n="navScroll">建发股份软件下载中心</span>
+                    </div>
+                </div>
+                <!-- 语言选择器 -->
+                <title>SVG地球旋转效果</title>
+                <style type="text/css">
+                    /* 自定义地球旋转动画 */
+                    @keyframes rotate-earth {
+                        from {
+                            transform: rotate(0deg);
+                        }
+
+                        to {
+                            transform: rotate(360deg);
+                        }
+                    }
+
+                    .earth-container {
+                        animation: rotate-earth 12s linear infinite;
+                        transform-origin: center;
+                        transition: transform 0.3s ease;
+                    }
+
+                        .earth-container:hover {
+                            animation-duration: 5s;
+                            transform: scale(1.1);
+                        }
+                </style>
+                </head>
+                <!-- 语言选择器 -->
+                <div class="language-select-wrapper">
+                    <!-- #2b50b8 -->
+                    <div class="earth-container cursor-pointer" id="earthIcon" style="width: 24px; height: 24px;">
+                        <!-- SVG地球图标 -->
+                        <svg t="1761700819830" class="earth-svg" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8442">
+                            <path d="M503.2 436.2c0-0.1 0.1-0.1 0.2-0.2-0.2-0.9-0.3-1.6-0.4-2.2 0 0.8 0.1 1.6 0.2 2.4z m171.4 187.2h-0.1 0.1z m4.4 0.5c-1.1-0.2-3.4 0.1-4.4-0.5-0.6 2 0.3 2.7 4.4 0.5zM512 65.6C265.5 65.6 65.6 265.5 65.6 512S265.5 958.4 512 958.4c246.5 0 446.4-199.9 446.4-446.4S758.5 65.6 512 65.6zM797.1 240c-15.4 0.5-26.1 0.5-38.4 9-5 3.4-8.4 8-14.7 9.8-5.7 1.6-11.8 0.2-17.4 2.1-20.3 6.9-17.1 50.3-43.8 43.8-12.6-3.1-21.4-17.9-27.7-27.6-5.6-8.5-15.7-15.6-8.9-26.2-3.1 0.8-6.5-0.1-9.5 0.5 4.3-9.4 18.6-8.6 21-13.4 5.9-12-16.4-13.3-22.7-15 7.6-8.1 11.5 2.7 19 0.9 7.2-1.8-3.8-11.3-8.1-12.4-1.6-0.4-27 7-12.3-6.2L579 170.5c-3.1 12.9 24.2 20.2 33.1 24.8-1.4 5.3-9.7 13.1-16 10.8-6-2.1-3.6-12-12.6-11-6.4 15 13.6 10.6 15.5 19.8 2.1 10.5-7.6 6-11.3 5.8-0.9 0-7.8-7.2-8.2-1.8-0.5 6.5 11.1 3.9 11.9 10.5-13.4 0.5-20.3-4.3-31.3-11.6-12.8-8.5-19.3-7.7-35-7.7 4.7-1.9 11.1-3.3 15.1-6.4 2.2-1.7 10.8-10 11.3-11.9 2.4-8-0.1-7.4-7.8-12.7-6.8-4.7-15.1-13.1-23.4-14.7-30-6-9.3 27.1-32 31.6h1.1-1.3 0.2c-5.3-0.2-15.1-1.5-18.5 1.3-2.4 2-2.6 9.8-5.3 12.7-4.8 5.1-11.9 6.1-17.6 9.8-5.5 3.6-17.8 12.8-21.1 19-12 23 27.1 30.1 41.9 36.8 6.7 3 26.3 7.2 29.9 12.2 4.9 6.8-4.2 13.2 6 18 3.3 1.5 10 1.8 12.8-1.3 4.6-5.1-1.9-6.3-2.9-12.2-2.1-11.4 1.4-6.9 7.1-11.1 11.7-8.7 9.1-9.2 4.9-23-2-6.4-9.3-24.3-2.8-29.1 8.5-6.2 26.5 3.3 33 4.2 7.6 0.9 11.8 11.4 16 15.7 2.7 2.8 7.6 8.9 12.4 8.2 7.6-1 4.4-7.7 8.8-10.7 11.8-8.2 14.9 2.9 19.6 14.1 4.4 10.4 8.6 14.3 16.5 21 3.7 3.1 19.7 14.3 18.2 21.1-1 4.6-19.3 11.6-24.2 13.2-17.9 5.7-51.5-9.3-55.1 19.1 6.9-2.6 26.7-18.7 32.6-11.1 2.7 3.5-2.1 8.5-1 12 3.4 10.3 11.3 6.7 19.7 5.1-0.6 0.4-1.2 0.7-1.8 0.9 11.4-5.9 10.2-4.7 15.5-14.2 1.7-3.1 4.3-10.6 6.7-12.9 8.3-7.6 9.6-2.4 14.7 3.5 1.3 1.6 14.1 19.9 9.5 19-14.8-3-29-2.6-41.3 5.5-7.1 4.7-13.8 11-22.2 14.1-2 0.7-17 2.2-15.2-0.4 2.6-3.7 11.5-6.2 15-10.2-9.7-4-17.8 4.8-25.5 10-8.1 3.8-10 11-16.9 17.3-3 2.7-8.7 3.2-11.7 6.8-2.9 3.5-3.2 9-5.9 12.3-1.9 2.3-6.8 0.9-8.8 4.4-2.6 4.6 2.4 8.8 1.3 12.1-2 6-13.4 11.1-17.8 15.4 0.6-0.6 1.2-1.1 1.7-1.7-4.4 4.6-9.9 8-13.4 13.3 1.6 7.5 6.5 25.4 5.1 29.6-4.6 13.6-13.4-7.4-17-12.8-12.3-18.6-37-6.2-53.9-4.6-21.6 2-42.7 30-29.4 52.7 6.4 10.9 17.1 15.1 29.4 12.6 11-2.2 14.3-17.6 24.6-17.9 19-0.5 0.4 18.6-1.2 25.6-1.5 6.5 2.4 7.1 9 8.7 4.9 1.2 11.9-2.1 16.2 0.7 2.7 1.8 2.6 11.5 6.3 8.4-7.3 6-5.6 20.4 1.9 25.6 8.3 5.8 18.1 0.4 26.7 2.6 16.4 4.2 8.6-1.2 23-9.9 9.7-5.9 11.3 1.1 18 1.1 4.5 0 7.4-6.5 14.9-4.6 6.2 1.6 8.6 6.3 16 7.4 3 0.4 6.1-1.1 9-0.8 13.6 1.5 24 10.2 34.7 18.1 8.8 6.5 14.7 5.2 25 8.1 7.5 2.1 21.5 13.1 20.7 22.6-0.1 1.7-6.7 10.3-7.8 14.2 1.9 1.3 15.3-1.7 19.3-1.9-1.3 1.5-10.4 7.9-10.4 4.5 0 1.7 6.5 5.3 8 6.4 4.8-15.5 12.6-5.5 22-1.7 8 3.3 17.9 3.4 26.4 5.5 7.3 1.7 23.2 6.6 28.6 12.6 6.5 7.1 2 18.7-2.8 25.8-6.3 9.3-15.7 12.9-19.6 23.8-3.1 8.7-0.8 17.4-2.5 27.1-2.4 13-4.3 8.5-12.7 16.4-7.1 6.7-0.1 5.5-9.7 9.8-9.7 4.3-18.1 3-24.8 13.6 0.3-0.7 0.5-1.3 0.7-2-2.8 3.9-4.2 12-5.6 14.7-3.4 6.8-8 11-13.3 16.7-2 2.2-20.8 27.8-21.9 25.7-1.4-2.7-16.2 2.7-16.9-1.1 0.6 3.2-0.1 2.1 3.5 4-3.4 21.1-12.3 24.2-33 24.4 1.8 10.1-7.5 8.1-11.8 13.6-2.5 3.2-3.7 12.1-5.5 16.2-1.1 2.6-9.2 13-9.2 15 0 1.9 2.7 4.7 5.3 7.3-14.6 2.9-29.5 4.9-44.6 6.1 2.8-3.6 3.5-6.7-5.5-7.1 2.4-6.5 8.1-10.3 10.5-16.6 1.1-3 0.2-4.2 1.2-7.1 3.3-10.2 1.9-6.4 0-14.3-4.4-18.6 1.5-23.7 6.6-40.8 5.2-17.5 4.7-40.3 8.1-59.2 1.6-9 4.2-27.8 1-36.4-3.5-9.6-19.1-17.2-26.2-23.7-10.1-9.2-15.5-19.1-22.9-30.5-3.8-5.8-8.1-11.4-11.1-17.7-6.3-13.4 0-5.4 1.1-13.3 1-7.6-0.9-14.5 2.1-22.5 3.4-8.9 11.7-14.4 14.5-23.4 2.5-8 0.6-18-7.6-20.6-4.6-1.5-9.6 1.9-14.2 1.2-6.4-1-13.6-5.8-18.6-9.6-7-5.3-9.6-14-17.1-19.1-6.2-4.2-10.7-1.7-17.4-3.7-7-2.1-11.3-10.6-16.9-13.3-8.4-4-13.2 1.8-22.1 0.6-7.6-1-19.1-9.4-26.2-12.5-14.4-6.4-23.1-13.5-28.9-28.1-4.9-12.5-12.1-18.4-20.6-28.8-8.6-10.6-11.2-19.6-24.4-22.4-1.5-0.3 3.2 11.1 3.7 12 4.7 8.7 11.8 16.7 17.5 24.9 8.4 12 4.8 14.2-3.7 2.6-9.8-13.3-21.1-26.4-29.5-40.5-3.2-5.3-2.6-8.7-7.9-13.8-5.1-4.9-11.8-7.2-16.9-11.9-18.5-16.6-21.8-38.8-19.7-62.4 0.7-7.7 3.5-13.9 2.2-21.3-1-6.2-4.7-11.3-9.2-15.8-1.5-2.3-5.1-8.1-5.4-8.4-4.2-7-7.5-13.8-14.1-19.5-3.8-3.3-13.7-11-23-17.4 41.8-52.2 96.5-93.5 159.3-119.1 0.5 3.2 1.9 6.3 3.9 9.3 5.2 7.7 10.1 7 20.2 9.2-1.1 11.7-14.7 11.8-24 10.5-11-1.5-22.7-5.2-32.2 4.5 5.3 3.2 19.8 15.6 17.9 2.6 10.6-0.5 20.8-0.8 31.2 0.4 4.1 0.5 18 5.2 21.8 3 1.6-0.9 3.3-8.7 4.9-11.1-2.9 0-6.1-1.5-9-1.2 6.8-8.8 13.7-1.9 22.4 2.1-9.6 5.8-3.9 19.8 5.5 8.5 7.7-9.3-1.9-16.1-11.7-21.6 9.9-12.3 16-13.5 25.3 0.5 1.5-8.6 8.5-5.2 15.7-4.5v-2.1c-3.2 0.1-6.6-1.8-9.8-1.4 7.4-11.8 2.7-14.5 13.2-18.3 8.4-3.1 32.4-0.2 35.4-8.1-16.8 3.3-37.1 4-52.2 11.7-6.5 3.3-14.3 13.7-20.8 6.9-6.7-6.9 4.8-18.1 10.6-21.5h-1.4c26.6-5.7 54.1-8.7 82.3-8.7 18.2 0 36.2 1.4 53.8 3.8-6.1 3.2-1.6 5.4-6 8.6-8.5 6.2-23.5 11.4-33.6 15.4 12.8 0 43.8 12 49.8-6-4.1-0.6-8.3-1.3-12.4-1.9 7.7-5.1 16.3-9.3 25.4-12.3 81.6 16.2 154.2 57.5 209.4 115.6-0.2-0.5-0.6-0.5-1-0.5z m72.3 156.7c0.7-1.6 2.5-2.1 3.2-3.4 1.5-2.7 1.2-4.6 3-6.9 2-2.5 4.6-3.1 6.8-5.1 0.7-0.6 1.3-1.4 1.8-2.3 6.6 18.5 11.9 37.6 15.6 56.9-0.1 0.1-0.2 0.4-0.3 0.5-1 0.8-7.2 1.7-8.5 1.7-4.5 0.2-7.9-2.8-11.1-5.7-3.3-2.9-7.2-6.7-9.6-10.4-2.5-4-1-8.1-0.8-12.6 0.1-3.8-1.8-9.2-0.1-12.7z m5.1 204.7c-7.7-6.7-16.7-15.6-22.2-24.2-5.8-9.2-2.2-18.7-1.8-29.2 0.4-8.9-4-21.5-0.2-29.5 1.7-3.6 5.7-4.8 7.3-7.8 3.5-6.3 2.7-10.6 7-16 4.6-5.8 10.7-7.3 15.8-11.8 5.3-4.8 5.2-8.6 8.6-14.7 2.5-4.5 8.3-12 13.8-15.9 3 19.8 4.5 39.8 4.5 59.8 0 35.2-4.7 69.3-13.4 101.8-7.5-2.1-13.5-7.4-19.4-12.5z m0 0" fill="#10448b" p-id="8480"></path>
+                        </svg>
+                        </select>
+                    </div>
+                    &nbsp;&nbsp;
+                    <select class="language-selector">
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 股份网站导航 -->
+    <div class="grid category-title">
+        <div data-i18n="navWebsites">➭网站导航</div>
+    </div>
+    <div class="grid nav-list">
+
+        <!-- <div class="button-wrapper"> -->
+        <!--新增模块复制一下内容：
+
+            <a href="https://8000.chinacdc.com/c" target="_blank">
+                <div class="button">邮件问题上报</div>
+            </a>
+
+            -->
+
+        <a href="https://home.chinacdc.com" target="_blank" class="button" data-i18n="navInternal">
+            内部网
+        </a>
+        <a href="https://mail.chinacnd.com/" target="_blank" class="button" data-i18n="navEmail">
+            公司邮箱
+        </a>
+        <a href=" https://u.exexm.com/index.html"
+           target="_blank" class="button" data-i18n="navEJianxueWeb">
+            E建学Web
+        </a>
+
+        <!-- </div> -->
+    </div>
+
+    <!-- 软件分组展示区 -->
+    <div class="grid category-title" data-i18n="officeTitle">➭办公（ERP、VPN、云盘、WPS）</div>
+    <div class="grid">
+        <!--建发股份ERP-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="cndErpTooltip">
+                <img src="images/erp.png" />
+                <div class="atvImg-layer" data-img="./images/erp.png"></div>
+                <div class="atvImg-layer" data-img="./images/erp.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a href="app/CND ERP.exe" target="_blank" onclick="clickstat('CND ERP')"
+                           data-i18n="windowsVersion" data-href="cndErpWindowsVersion">Windows 版本</a>
+                        <a href="app/CND ERP.dmg" target="_blank" onclick="clickstat('CND ERP')"
+                           data-i18n="macOSVersion" data-href="cndErpMacOSVersion">MacOS 版本</a>
+                        <a href="app/CND ERP.zip" target="_blank" onclick="clickstat('CND ERP')"
+                           data-i18n="uosVersion" data-href="cndErpUosVersion">统信 版本</a>
+                    </div>
+                </div>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/BF3awxbBbib4dRkLJsSc48kyngh?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="CND ERP" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="CND ERP.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--VPN-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="cndVpnTooltip">
+                <img src="images/VPN.png" />
+                <div class="atvImg-layer" data-img="images/VPN.png"></div>
+                <div class="atvImg-layer" data-img="images/VPN.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://vpn.chinacnd.com/" data-href="cndVpn" target="_blank" onclick="clickstat('VPN')" title="官网下载">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/NrxTwP9mGi5Egxktc8AcUjZRnCe" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="VPN" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="EasyConnectInstaller.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--lightwan-->
+        <div class="wrapper">
+            <!-- 3D图片容器：鼠标悬浮时有3D效果 -->
+            <div class="atvImg" data-i18n-info="cndLightwanTooltip">
+                <img src="images/lightwan.png" />
+                <!-- 3D图片分层：实现3D悬浮效果的两层图片 -->
+                <div class="atvImg-layer" data-img="./images/lightwan.png"></div>
+                <div class="atvImg-layer" data-img="./images/lightwan.png"></div>
+            </div>
+
+            <!-- 按钮容器：包含下载和安装教程按钮 -->
+            <div class="button-wrapper">
+                <!-- 下载按钮：点击时触发下载统计，target="_blank"新窗口打开 -->
+                <a href="https://www.lightwan.com.cn/resources/#download" data-href="cndLightwan" target="_blank"
+                   onclick="clickstat('lightwan')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <!-- 安装教程按钮：跳转至教程页面 -->
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/FrvXwo3pmiM2fJkqeyoc50NgnFg?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+
+            <!-- 下载统计区域：显示下载次数和软件大小（通过JS动态填充） -->
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="lightwan" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="lightwan.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--建发股份云盘-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="cndPanTooltip">
+                <img src="images/cndpan.png" />
+                <div class="atvImg-layer" data-img="images/cndpan.png"></div>
+                <div class="atvImg-layer" data-img="images/cndpan.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a href="app/建发股份云盘_All_Windows_x64-7.0.6.6-20260116-Release-2145.exe " target="_blank"
+                           onclick="clickstat('建发股份云盘')" data-i18n="windowsVersion" data-href="cndPanWindowsVersion">Windows 版本</a>
+                        <a href="app/AnyShare_All_Mac_x64-7.0.6.7-20260210-Release-853.dmg " target="_blank"
+                           onclick="clickstat('建发股份云盘')" data-i18n="macOSVersion" data-href="cndpanMacOSVersion">MacOS 版本</a>
+                        <a href="app/signed_cn.aishu.anyshare_7.0.6.7-527-amd64-260310.deb" target="_blank"
+                           onclick="clickstat('建发股份云盘')" data-i18n="uosVersion" data-href="cndPanUosVersion">统信 版本</a>
+                        <a href="https://yunpan.chinacnd.com/anyshare/zh-cn/" target="_blank"
+                           onclick="clickstat('建发股份云盘')" data-i18n="moreVersion" data-href="cndpanmoreVersion">更多版本</a>
+                    </div>
+                </div>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/ZJb1wu96siIpPfk1BE7c6RzQnTN?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="建发股份云盘" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="建发股份云盘_All_Windows_x64-7.0.6.6-20260116-Release-2145.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--WPS企业版-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="cndWpsTooltip">
+                <img src="images/WPS企业版.png" />
+                <div class="atvImg-layer" data-img="images/WPS企业版.png"></div>
+                <div class="atvImg-layer" data-img="images/WPS企业版.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/WPS企业版.exe" target="_blank" data-href="cndWps" onclick="clickstat('WPS 2023')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载 </div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/HNUQwP80diPKArkdJLYcugdznHb?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="WPS 2023" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="WPS企业版.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--wps365-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="wps365Tooltip">
+                <img src="images/WPS365.png" />
+                <div class="atvImg-layer" data-img="images/WPS365.png"></div>
+                <div class="atvImg-layer" data-img="images/WPS365.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a href="https://work.wps.cn/download/2z4xvuqqjcyBlTJu" target="_blank"
+                           onclick="clickstat('wps365')" data-i18n="cndwpsVersion" data-href="cndwps365Version">股份版本</a>
+                        <a href="https://365.wps.cn/download365 " target="_blank"
+                           onclick="clickstat('wps365')" data-i18n="officialwebsiteVersion" data-href="officialwebsiteVersion">官方版本</a>
+                    </div>
+                </div>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/DLOFwtcvJiRQOjknjNNchzeXndb?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="wps365" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="JFGF_GKJ3wZd951.720.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--建合智链ERP-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="jfzhilianTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/建合智链ERP.png"></div>
+                <div class="atvImg-layer" data-img="images/建合智链ERP.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a href="app/建合智链ERP.exe" target="_blank" onclick="clickstat('建合智链ERP')"
+                           data-i18n="windowsVersion" data-href="jfzhilianWindowsVersion">Windows 版本</a>
+                        <a href="app/建合智链ERP正式库.dmg" target="_blank" onclick="clickstat('建合智链ERP')"
+                           data-i18n="macOSVersion" data-href="jfzhilianMacOSVersion">MacOS 版本</a>
+                    </div>
+                </div>
+                <a href="word/供应链ERP安装方法.docx" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="建合智链ERP" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="建合智链ERP.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--金仕达套保交易管理系统-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="jsdtbTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/金仕达套保交易管理系统V2.png"></div>
+                <div class="atvImg-layer" data-img="images/金仕达套保交易管理系统V2.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="app/金仕达套保交易管理系统V2.exe" data-href="jsdtb" target="_blank" onclick="clickstat('金仕达套保交易管理系统V2')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/LvG1wCQBGiffDfkXXPTcJhmhnuh?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="金仕达套保交易管理系统V2" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="金仕达套保交易管理系统V2.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--建发套期保值交易系统-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="jsdtbv1Tooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/金仕达套保交易管理系统V1.png"></div>
+                <div class="atvImg-layer" data-img="images/金仕达套保交易管理系统V1.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="app/金仕达套保交易管理系统V1.7z" data-href="jsdtbv1" target="_blank" onclick="clickstat('金仕达套保交易管理系统V1')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/LvG1wCQBGiffDfkXXPTcJhmhnuh?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="金仕达套保交易管理系统V1" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="金仕达套保交易管理系统V1.7z" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--VDI-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="jfvdiTooltip">
+                <img src="images/vdi.png" />
+                <div class="atvImg-layer" data-img="images/vdi.png"></div>
+                <div class="atvImg-layer" data-img="images/vdi.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://vdi.chinacnd.com/por/login_psw.csp" data-href="jfvdi" target="_blank" onclick="clickstat('VDI')"
+                   title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://vdi.chinacnd.com/com/help/" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="VDI" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="install.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!-- 占位用，好排版 -->
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+    </div>
+    <div class="grid category-title" data-i18n="imTitle">➭即时通讯（企业微信、飞书、微信、QQ、会议）</div>
+    <div class="grid">
+        <!--企业微信-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="weixinWorkTooltip">
+                <img src="images/企业微信.png" />
+                <div class="atvImg-layer" data-img="images/企业微信.png"></div>
+                <div class="atvImg-layer" data-img="images/企业微信.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://work.weixin.qq.com/#indexDownload" data-href="weixinWork" target="_blank" onclick="clickstat('企业微信')"
+                   title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://open.work.weixin.qq.com/help2/pc/13352?person_id=0&is_tencent=" target="_blank"
+                   title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="企业微信" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="企业微信.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--飞书-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="feishuTooltip">
+                <img src="images/飞书.png" />
+                <div class="atvImg-layer" data-img="images/飞书.png"></div>
+                <div class="atvImg-layer" data-img="images/飞书.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://www.feishu.cn/download" data-href="feishu" target="_blank" onclick="clickstat('飞书')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://bytedance.larkoffice.com/docx/Zt8ldbi07oP53NxaA29c3bgsnUh" target="_blank"
+                   title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="飞书" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="飞书.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--微信-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="weixinTooltip">
+                <img src="images/微信.png" />
+                <div class="atvImg-layer" data-img="images/微信.png"></div>
+                <div class="atvImg-layer" data-img="images/微信.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://pc.weixin.qq.com/" data-href="weixin" target="_blank" onclick="clickstat('微信')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://kf.qq.com/product/weixin.html#hid=hot_faq" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="微信" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="微信.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--腾讯会议-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="tencentMeetingTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/腾讯会议.png"></div>
+                <div class="atvImg-layer" data-img="images/腾讯会议.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://meeting.tencent.com/download/" data-href="tencentMeeting" target="_blank" onclick="clickstat('腾讯会议')"
+                   title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://meeting.tencent.com/support/" target="_blank" onclick="clickstat('腾讯会议')" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="腾讯会议" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="腾讯会议.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--Zoom Workplace-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="zoomTooltip">
+                <img src="images/zoom.png" />
+                <div class="atvImg-layer" data-img="./images/zoom.png"></div>
+                <div class="atvImg-layer" data-img="./images/zoom.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/ZoomInstallerFull.exe" data-href="zoom" target="_blank" onclick="clickstat('Zoom Workplace')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://go.zoom.us/download" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="Zoom Workplace" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="ZoomInstallerFull.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--teams-->
+        <div class="wrapper">
+            <!-- 3D图片容器：鼠标悬浮时有3D效果 -->
+            <div class="atvImg" data-i18n-info="teamsTooltip">
+                <img src="images/teams.png" />
+                <!-- 3D图片分层：实现3D悬浮效果的两层图片 -->
+                <div class="atvImg-layer" data-img="./images/teams.png"></div>
+                <div class="atvImg-layer" data-img="./images/teams.png"></div>
+            </div>
+
+            <!-- 按钮容器：包含下载和安装教程按钮 -->
+            <div class="button-wrapper">
+                <!-- 下载按钮：点击时触发下载统计，target="_blank"新窗口打开 -->
+                <a href="app/MSTeamsSetup.exe" data-href="teams" target="_blank" onclick="clickstat('teams')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <!-- 安装教程按钮：跳转至教程页面 -->
+                <a href="https://teams.microsoft.com" target="_blank" title="在线使用">
+                    <div class="button" data-i18n="installGuide">在线使用</div>
+                </a>
+            </div>
+
+            <!-- 下载统计区域：显示下载次数和软件大小（通过JS动态填充） -->
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="teams" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="MSTeamsSetup.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--建发视频会议-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="cndVideoConfTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/建发视频会议.png"></div>
+                <div class="atvImg-layer" data-img="images/建发视频会议.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://172.23.50.50/manager/download" data-href="cndVideoConf" target="_blank" onclick="clickstat('建发视频会议')"
+                   title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/Mxg3wSAVqijdpRkxsVLcrfjUn7f?from=from_copylink"
+                   target="_blank" onclick="clickstat('建发视频会议')" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="建发视频会议" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="建发视频会议.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--QQ-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="qqTooltip">
+                <img src="images/qq.png" />
+                <div class="atvImg-layer" data-img="images/qq.png"></div>
+                <div class="atvImg-layer" data-img="images/qq.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://im.qq.com/pcqq/index.shtml" data-href="qq" target="_blank" onclick="clickstat('QQ')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://im.qq.com/pcqq/support.html" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="QQ" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="QQ_9.9.21_250904_x64.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!-- 占位用，好排版 -->
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+    </div>
+
+    <div class="grid category-title" data-i18n="Security">➭安全（入网小助手、360杀毒、360急救箱、银狐专杀工具）</div>
+    <div class="grid">
+        <!--360建发股份-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="antivirusTooltip">
+                <img src="images/360_tq.png" />
+                <div class="atvImg-layer" data-img="images/360政企.png"></div>
+                <div class="atvImg-layer" data-img="images/360政企.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://360.chinacnd.com/dist/static/download/index.html" data-href="antivirus" target="_blank"
+                   onclick="clickstat('建发股份360')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/UboIwI5PpiCy3Ckqxj0ckNEUnMc?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="建发股份360" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="360EPP1390171584[172.26.10.185-8080]-W-全网终端.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--终端网络准入-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="networkAccessTooltip">
+                <img src="images/终端网络准入.png" />
+                <div class="atvImg-layer" data-img="images/终端网络准入.png"></div>
+                <div class="atvImg-layer" data-img="images/终端网络准入.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a href="app/172.18.7.3_80_http_IsSetup_Agent.exe" data-href="networkAccessWindowsVersion" target="_blank" onclick="clickstat('终端网络准入')"
+                           data-i18n="windowsVersion">Windows版本</a>
+                        <a href="app/asm_mac.zip" data-href="networkAccessMacOSVersion" target="_blank" onclick="clickstat('终端网络准入')"
+                           data-i18n="macOSVersion">MacOS版本</a>
+                        <a href="app/172.18.7.3_80_http_0_IsaHelpLinuxAgent_uos_x86_64.deb" data-href="networkAccessUosVersion" target="_blank" onclick="clickstat('终端网络准入')"
+                           data-i18n="uosVersion">统信版本</a>
+                        <a href="https://yunpan.chinacnd.com/link/AAB43E42548C424CCF8DD4A78B4E9900CF" data-href="networkAccessmoreVersion" target="_blank" onclick="clickstat('终端网络准入')"
+                           data-i18n="moreVersion">更多版本</a>
+                    </div>
+                </div>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/Z2iTw6z38icVxFk6NL1cSLHrnRz?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="终端网络准入" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="172.18.7.3_80_http_IsSetup_Agent.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--银狐专杀-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="sfakillerTooltip">
+                <img src="images/sfakiller.png" />
+                <div class="atvImg-layer" data-img="images/sfakiller.png"></div>
+                <div class="atvImg-layer" data-img="images/sfakiller.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="app/sfakiller_x64.exe" data-href="sfakiller" target="_blank" onclick="clickstat('银狐专杀')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/PuwRwKcmxiss7hkM1kkccB5tnlg?from=from_copylink" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="银狐专杀" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="sfakiller_x64.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--360急救箱-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="EmergencyTooltip">
+                <img src="images/360急救箱.png" />
+                <div class="atvImg-layer" data-img="images/360急救箱.png"></div>
+                <div class="atvImg-layer" data-img="images/360急救箱.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://weishi.360.cn/jijiuxiang/index.html" data-href="Emergency" target="_blank" onclick="clickstat('360急救箱')" title="">
+                    <div class="button" data-i18n="officialDownload">官方下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/PuwRwKcmxiss7hkM1kkccB5tnlg?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="360急救箱" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="360急救箱.zip" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!-- 占位用，好排版 -->
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+    </div>
+
+    <div class="grid category-title" data-i18n="otherTitle">➭其它（邮箱、阅读器、浏览器、解压缩、输入法、远程工具、打印驱动）</div>
+    <div class="grid">
+        <!--Foxmail-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="foxmailTooltip">
+                <img src="images/cndfoxmail.png" />
+                <div class="atvImg-layer" data-img="images/cndfoxmail.png"></div>
+                <div class="atvImg-layer" data-img="images/cndfoxmail.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://www.foxmail.com/" data-href="foxmail" target="_blank" onclick="clickstat('Foxmail')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/FF73wUmtyiaZjBkyMiqc7bkHnCh?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="Foxmail" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="Foxmail.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--Coremail邮箱客户端-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="coremailTooltip">
+                <img src="images/Coremail邮箱客户端.png" />
+                <div class="atvImg-layer" data-img="images/Coremail邮箱客户端.png"></div>
+                <div class="atvImg-layer" data-img="images/Coremail邮箱客户端.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/cmclient.exe" data-href="coremail" target="_blank" onclick="clickstat('Coremail邮箱客户端')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/Js63wqiyBi83F5ksI4GckLqwnee?from=from_copylink"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="Coremail邮箱客户端" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="cmclient.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--AdobePDF阅读器-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="adobeTooltip">
+                <img src="images/AdobePDF.png" />
+                <div class="atvImg-layer" data-img="images/AdobePDF.png"></div>
+                <div class="atvImg-layer" data-img="images/AdobePDF.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a data-href="adobe" target="_blank" onclick="clickstat('AdobePDF阅读器')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://helpx.adobe.com/cn/support/acrobat.html" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="AdobePDF阅读器" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="AdobePDF阅读器.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--360压缩-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="360zipTooltip">
+                <img src="images/360zip.png" />
+                <div class="atvImg-layer" data-img="images/360zip.png"></div>
+                <div class="atvImg-layer" data-img="images/360zip.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://yasuo.360.cn/" data-href="360zip" target="_blank" onclick="clickstat('360压缩')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://yasuo.360.cn/help.html" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="360压缩" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="360压缩.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--7-zip-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="7-zip">
+                <img src="images/7-zip.png" />
+                <div class="atvImg-layer" data-img="images/7-zip.png"></div>
+                <div class="atvImg-layer" data-img="images/7-zip.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/7-zip.exe" target="_blank" data-href="7-zip" onclick="clickstat('7-zip')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载 </div>
+                </a>
+                <a href="https://www.7-zip.org/faq.html"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="7-zip" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="7-zip.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--谷歌浏览器-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="chromeTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="/images/chrome.png"></div>
+                <div class="atvImg-layer" data-img="/images/chrome.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <div class="dropdown">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                    <div class="dropdown-content">
+                        <a target="_blank" onclick="clickstat('谷歌浏览器')" data-i18n="localversion" data-href="offlineinstallation">离线安装包</a>
+                        <a target="_blank" onclick="clickstat('谷歌浏览器')" data-i18n="onlineversion" data-href="onlineinstallation">在线安装包</a>
+                    </div>
+                </div>
+                <a href="https://support.google.com/chrome/answer/95346?hl=zh-Hans&ref_topic=7439538&sjid=11550958031356083183-NC"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="谷歌浏览器" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="ChromeStandaloneSetup64.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--搜狗输入法-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="sogouInputTooltip">
+                <img src="images/搜狗输入法.png" />
+                <div class="atvImg-layer" data-img="images/搜狗输入法.png"></div>
+                <div class="atvImg-layer" data-img="images/搜狗输入法.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://shurufa.sogou.com/windows" data-href="sogouInput" target="_blank" onclick="clickstat('搜狗输入法')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://shurufa.sogou.com/specials" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="搜狗输入法" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="sogou_pinyin_guanwang_15.8.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--微信输入法-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="WeChatInputTooltip">
+                <img src="images/微信输入法.png" />
+                <div class="atvImg-layer" data-img="images/微信输入法.png"></div>
+                <div class="atvImg-layer" data-img="images/微信输入法.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://z.weixin.qq.com/" data-href="WeChatInput" target="_blank" onclick="clickstat('微信输入法')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://z.weixin.qq.com/" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="微信输入法" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="微信输入法.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--QQ输入法-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="qqpinyin">
+                <img src="images/qqpinyin.png" />
+                <div class="atvImg-layer" data-img="images/qqpinyin.png"></div>
+                <div class="atvImg-layer" data-img="images/qqpinyin.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://qq.pinyin.cn/" data-href="qqpinyin" target="_blank" onclick="clickstat('QQ输入法')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://qq.pinyin.cn/help/" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="QQ输入法" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="QQPinyin.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--增值税电子发票阅读器-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="vatReaderTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/增值税电子发票阅读器.png"></div>
+                <div class="atvImg-layer" data-img="images/增值税电子发票阅读器.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/增值税电子发票阅读器.exe" data-href="vatReader" target="_blank" onclick="clickstat('增值税电子发票阅读器')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="word/增值税电子发票公共服务服务平台-电子发票查验指南.pdf" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="增值税电子发票阅读器" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="增值税电子发票阅读器.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--向日葵-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="sunloginTooltip">
+                <img src="images/向日葵.png" />
+                <div class="atvImg-layer" data-img="images/向日葵.png"></div>
+                <div class="atvImg-layer" data-img="images/向日葵.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://sunlogin.oray.com/download" data-href="sunlogin" target="_blank" onclick="clickstat('向日葵')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载 </div>
+                </a>
+                <a href="https://service.oray.com/product/sunlogin.html" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="向日葵" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="AweSun_16.0.1.24350_x64.exe"
+                                                                 class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--todesk-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="todesk">
+                <img src="images/todesk.png" />
+                <div class="atvImg-layer" data-img="/images/todesk.png"></div>
+                <div class="atvImg-layer" data-img="/images/todesk.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <!-- 这是单个按钮代码，如果需要取消下面注释 -->
+                <a data-href="todesk" target="_blank" onclick="clickstat('todesk')" title="点击下载">
+                    <div class="button" data-i18n="officialDownload">/官网下载 </div>
+                </a>
+                <!-- 这是下拉按钮代码，如果需要取消下面注释 -->
+                <!-- <div class="dropdown">
+                    <div class="button" data-i18n="localDownload/officialDownload">本地下载/官网下载</div>
+                    <div class="dropdown-content">
+                        <a target="_blank" onclick="clickstat('softwarename')" title="点击下载"
+                           data-i18n="version1" data-href="version1">版本1</a>
+                        <a target="_blank" onclick="clickstat('softwarename')" title="点击下载"
+                           data-i18n="version2" data-href="version2">版本2</a>
+                    </div>
+                </div> -->
+                <a href="https://www.todesk.com/helpcenter.html"
+                   target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="todesk" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="ToDesk_4.8.5.1.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--顺发打单-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="sfExpressTooltip">
+                <img src="images/顺发打单.png" />
+                <div class="atvImg-layer" data-img="./images/顺发打单.png"></div>
+                <div class="atvImg-layer" data-img="./images/顺发打单.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://sd.sf-express.com/#/download" data-href="sfExpress" target="_blank" onclick="clickstat('顺发打单')" title="">
+                    <div class="button" data-i18n="officialDownload">官网下载</div>
+                </a>
+                <a href="https://sd.sf-express.com/#/help?guideId=77" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">使用教程</div>
+                </a>
+            </div>
+
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="顺发打单" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="顺发打单.exe" class="down-num">0</span>
+                </div>
+            </div>
+        </div>
+        <!--打印驱动-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="printerDriverTooltip">
+                <img src="images/打印机驱动.png" />
+                <div class="atvImg-layer" data-img="./images/打印机驱动.png"></div>
+                <div class="atvImg-layer" data-img="./images/打印机驱动.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://yunpan.chinacnd.com/link/AAE9129A62987E4D9F946003E26276DE12" data-href="printerDriver" target="_blank" onclick="clickstat('打印机驱动')" title="">
+                    <div class="button" data-i18n="localDownload">建发云盘下载</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/NDzBwUeHlikYdOksyGHcuHganq3?from=from_copylink" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">使用教程</div>
+                </a>
+            </div>
+
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="打印机驱动" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="打印机驱动.exe" class="down-num">50M </span>
+                </div>
+            </div>
+        </div>
+        <!-- 占位用，好排版 -->
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+        <div class="wrapper placeholder"></div>
+    </div>
+
+    <div class="grid category-title" data-i18n="convertTitle">➭转换工具（音频、视频、图像、文档）</div>
+    <div class="grid">
+        <!--PDFgear-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="pdfgearTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/PDFgear.png"></div>
+                <div class="atvImg-layer" data-img="images/PDFgear.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="app/pdfgear.exe" data-href="pdfgear" target="_blank" onclick="clickstat('PDFgear')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="https://www.pdfgear.com/zh/" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="PDFgear" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="pdfgear.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--PotPlayer-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="PotPlayer">
+                <img src="images/PotPlayer.png" />
+                <div class="atvImg-layer" data-img="images/PotPlayer.png"></div>
+                <div class="atvImg-layer" data-img="images/PotPlayer.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://potplayer.tv/?lang=zh_CN" data-href="PotPlayer" target="_blank" onclick="clickstat('PotPlayer')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载 </div>
+                </a>
+                <a href="https://potplayer.tv/?lang=zh_CN" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程 </div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="PotPlayer" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="PotPlayerSetup64.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--StirlingPDF-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="stirlingPdfTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/StirlingPDF.png"></div>
+                <div class="atvImg-layer" data-img="images/StirlingPDF.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="http://soft.com:8080/?lang=zh_CN" data-href="stirlingPdf" target="_blank" onclick="clickstat('StirlingPDF')"
+                   title="">
+                    <div class="button" data-i18n="onlineUse">在线使用</div>
+                </a>
+                <a href="https://github.com/Stirling-Tools/Stirling-PDF" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="installGuide">使用教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="useCount">使用次数</span>:<span id="StirlingPDF" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="StirlingPDF" class="down-num">1M</span>
+                </div>
+            </div>
+        </div>
+        <!--Convertio-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="onlineConvertTooltip">
+                <img src="images/convertio.png" />
+                <div class="atvImg-layer" data-img="images/convertio.png"></div>
+                <div class="atvImg-layer" data-img="images/convertio.png"></div>
+            </div>
+            <div class="button-wrapper">
+                <a href="https://convertio.co/zh/" data-href="onlineConvert" target="_blank" onclick="clickstat('convertio')" title="">
+                    <div class="button" data-i18n="onlineConvert">在线转换</div>
+                </a>
+                <a href="https://support.convertio.co/hc/en-us" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">使用教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="useCount">使用次数</span>:<span id="convertio" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="convertio" class="down-num">1M</span>
+                </div>
+            </div>
+        </div>
+        <!--在线翻译-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="onlineTranslateTooltip">
+                <img src="images/horizon.png" />
+                <div class="atvImg-layer" data-img="images/horizon.png"></div>
+                <div class="atvImg-layer" data-img="images/horizon.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="https://jftranslate.chinacdc.com/translation" data-href="onlineTranslate" target="_blank" onclick="clickstat('horizon')"
+                   title="">
+                    <div class="button" data-i18n="onlineTranslate">在线翻译</div>
+                </a>
+                <a href="https://iwmu7k4fj26.feishu.cn/wiki/LvG1wCQBGiffDfkXXPTcJhmhnuh" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">使用教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="useCount">使用次数</span>:<span id="horizon" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="horizon" class="down-num">1M</span>
+                </div>
+            </div>
+        </div>
+        <!--一键部署-->
+        <div class="wrapper">
+            <div class="atvImg" data-i18n-info="oneClickDeployTooltip">
+                <img src="images/chrome.png" />
+                <div class="atvImg-layer" data-img="images/一键部署.png"></div>
+                <div class="atvImg-layer" data-img="images/一键部署.png"></div>
+            </div>
+
+            <div class="button-wrapper">
+                <a href="app/360准入一键部署包.exe" data-href="oneClickDeploy" target="_blank" onclick="clickstat('360准入一键部署包')" title="">
+                    <div class="button" data-i18n="localDownload">本地下载</div>
+                </a>
+                <a href="images/一键图.png" target="_blank" title="查看教程">
+                    <div class="button" data-i18n="userGuide">安装教程</div>
+                </a>
+            </div>
+            <div class="clickstat-wrapper">
+                <div>
+                    <span data-i18n="downloads">下载量</span>:<span id="360准入一键部署包" class="down-num">0</span>
+                    <span data-i18n="fileSize">软件大小</span>:<span id="360准入一键部署包.exe" class="down-num">0M</span>
+                </div>
+            </div>
+        </div>
+        <!--占位用，好排版-->
+        <div class="wrapper placeholder"></div>
+
+        <!-- 信息窗口tooltip -->
+        <div id="tooltip" class="tooltip"></div>
+        <script>// 获取所有 atvImg
+            const atvImgs = document.querySelectorAll('.atvImg');
+            const tooltip = document.getElementById('tooltip');
+            // 为每个 atvImg 添加鼠标移动和离开事件监听器
+            atvImgs.forEach(atv => {
+                atv.addEventListener('mousemove', (e) => {
+                    // tooltip.innerHTML = atv.getAttribute('data-info');
+                    tooltip.innerHTML = translations[currentLang][atv.getAttribute('data-i18n-info')];
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = e.pageX + 15 + 'px';
+                    tooltip.style.top = e.pageY + 15 + 'px';
+                });
+                atv.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            });</script>
+    </div>
+    <!-- 页面底部区域：包含当前时间、更多软件提示、更新日期、联系邮箱 -->
+    <div id="footer">
+        <div id="footer-content">
+            <div id="copy">
+                <!-- 当前时间显示容器：通过JS实时更新 -->
+                <!-- <p id="current-time"></p> -->
+                <!-- <script>
+                    /**
+                     * 获取当前日期时间函数
+                     * @returns {string} 格式化后的日期时间字符串（YYYY-MM-DD HH:MM:SS）
+                     */
+                    function getCurrentDateTime() {
+                        const now = new Date();
+                        // 获取年、月、日、时、分、秒
+                        const year = now.getFullYear();
+                        // 月份从0开始，需+1，不足2位补0
+                        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                        // 日期不足2位补0
+                        const day = now.getDate().toString().padStart(2, '0');
+                        // 小时不足2位补0
+                        const hours = now.getHours().toString().padStart(2, '0');
+                        // 分钟不足2位补0
+                        const minutes = now.getMinutes().toString().padStart(2, '0');
+                        // 秒数不足2位补0
+                        const seconds = now.getSeconds().toString().padStart(2, '0');
+                        // 返回格式化的日期时间字符串
+                        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                    }
+                    /**
+                     * 更新当前时间到页面
+                     * 从id为current-time的元素中更新文本内容
+                     */
+                    function updateDateTime() {
+                        document.getElementById("current-time").textContent = getCurrentDateTime();
+                    }
+                    // 每1秒（1000毫秒）调用一次updateDateTime，实现时间实时刷新
+                    setInterval(updateDateTime, 1000);
+                    // 页面加载时立即执行一次，避免初始空白
+                    updateDateTime();
+                </script> -->
+                <!-- 版权信息及技术支持联系方式 -->
+                <p>
+                    <span data-i18n="dataSource">&copy;版权信息及技术支持联系方式</span>
+                </p>
+                <!-- 页面更新日期：跳转至软件更新页面 -->
+                <p><a href="http://soft.cndinfo.com" data-i18n="updateTime">软件更新时间</a></p>
+                <!-- 联系邮箱：点击打开邮件客户端发送邮件至IT支持 -->
+                <!-- <p><a href="mailto:ithelp@chinacnd.com" target="_blank"></a></p> -->
+            </div>
+            <div id="contact">
+                <!-- <span data-i18n="contact">联系我们</span> -->
+                <!-- <img class="contact-img" src="images/qq.png" alt="" /> -->
+                <a href="https://work.weixin.qq.com/nl/innerkfid/ikfrE0BCQAAy0s32QmN41nz2L-UrqHNQA" target="_blank">
+                    <svg t="1761709155017"
+                         class="icon"
+                         viewBox="0 0 1024 1024"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         p-id="4651" width="30" height="30">
+                        <!-- #1296DB -->
+                        <path d="M468 128H160c-17.7 0-32 14.3-32 32v308c0 4.4 3.6 8 8 8h332c4.4 0 8-3.6 8-8V136c0-4.4-3.6-8-8-8z m-56 284H192V192h220v220z m-138-74h56c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8z m194 210H136c-4.4 0-8 3.6-8 8v308c0 17.7 14.3 32 32 32h308c4.4 0 8-3.6 8-8V556c0-4.4-3.6-8-8-8z m-56 284H192V612h220v220z m-138-74h56c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8z m590-630H556c-4.4 0-8 3.6-8 8v332c0 4.4 3.6 8 8 8h332c4.4 0 8-3.6 8-8V160c0-17.7-14.3-32-32-32z m-32 284H612V192h220v220z m-138-74h56c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8z m194 210h-48c-4.4 0-8 3.6-8 8v134h-78V556c0-4.4-3.6-8-8-8H556c-4.4 0-8 3.6-8 8v332c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V644h78v102c0 4.4 3.6 8 8 8h190c4.4 0 8-3.6 8-8V556c0-4.4-3.6-8-8-8zM746 832h-48c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z m142 0h-48c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"
+                              fill="#10448b"
+                              p-id="4652" />
+                    </svg>
+                </a>
+
+                <!-- <img src="images/wecom.png" alt="wecom" width="40" height="40" class="wecom-img"> -->
+            </div>
+        </div>
+    </div>
+    <!-- 引入3D图片激活交互的JS文件 -->
+    <script src="js/atvImgActive.js"></script>
+    <script>/**
+         * 页面初始化函数：页面加载完成后执行
+         * 1. 调用sendAjaxRequest获取统计数据（下载次数、软件大小）
+         * 2. 解析JSON数据并更新到页面对应元素
+         */
+        function init() {
+            // 发送AJAX请求获取统计数据，添加时间戳避免缓存
+            var jsonString = sendAjaxRequest("stats/index.php?action=getdata&t=" + new Date().getTime());
+            // 解析JSON字符串为对象
+            var obj = JSON.parse(jsonString);
+            // 获取下载次数数据
+            var countDatas = obj["countDatas"];
+            // 遍历下载次数数据，更新到页面对应ID的元素
+            for (var key in countDatas) {
+                if (countDatas.hasOwnProperty(key)) {
+                    var elem = document.getElementById(key);
+                    // 元素存在且当前值与新值不同时才更新（避免不必要的DOM操作）
+                    if (elem != null && elem.innerText != countDatas[key]) {
+                        elem.innerText = countDatas[key].toString();
+                    }
+                }
+            }
+            // 获取软件大小数据
+            var fileSizes = obj["fileSizes"];
+            // 遍历软件大小数据，更新到页面对应ID的元素
+            for (var key in fileSizes) {
+                if (fileSizes.hasOwnProperty(key)) {
+                    var elem = document.getElementById(key);
+                    if (elem != null && elem.innerText != fileSizes[key]) {
+                        elem.innerText = fileSizes[key].toString();
+                    }
+                }
+            }
+        }
+        /**
+         * 下载/使用统计函数：点击软件下载/使用按钮时触发
+         * @param {string} softname - 软件名称（用于统计区分不同软件）
+         */
+        function clickstat(softname) {
+            // 发送AJAX请求记录点击事件，encodeURIComponent处理软件名称中的特殊字符
+            sendAjaxRequest("stats/index.php?action=click&soft_name=" + encodeURIComponent(softname) + "&t=" + new Date().getTime());
+            // 重新调用init函数刷新统计数据
+            init();
+        }
+        /**
+         * AJAX请求发送函数：用于与后端交互获取/提交数据
+         * @param {string} url - 请求地址（含参数）
+         * @returns {string} 后端返回的响应文本
+         * @throws {Error} AJAX请求失败时抛出错误（状态码非200）
+         */
+        function sendAjaxRequest(url) {
+            // 创建XMLHttpRequest对象
+            var xhr = new XMLHttpRequest();
+            // 建立GET请求，false表示同步请求（确保数据获取完成后再执行后续逻辑）
+            xhr.open("GET", url, false);
+            // 设置请求头，标识为AJAX请求
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            // 发送请求
+            xhr.send();
+            // 请求成功（状态码200）返回响应文本
+            if (xhr.status === 200) {
+                return xhr.responseText;
+            } else {
+                // 请求失败抛出错误
+                throw new Error("AJAX request failed with status " + xhr.status);
+            }
+        }</script>
+
+    <script>var USER_LANG_KEY = "__USER_LANG_KEY__";
+        var LANG_CODES = {
+            ZH: "zh",
+            EN: "en"
+        }
+        var currentLang = '';
+
+        // 国际化翻译
+        var translations = {
+            en: {
+                // Navigation
+                navTitle: "Software Download Center",
+                navScroll: "This website always adheres to the use of genuine products, respects intellectual property rights, strictly purchases and manages computer software in accordance with the law, eliminates piracy and infringement, and ensures information security and compliance.",
+                navWebsites: "➭Websites Navigation",
+                navInternal: 'Intranet',
+                navEmail: 'Company Email',
+                navEJianxueWeb: 'E learning Web',
+
+                // Categories
+                officeTitle: "➭Office (ERP 、VPN 、Cloud Drive 、WPS)",
+                imTitle: "➭Instant Messaging (WeCom 、 Feishu 、 WeChat 、QQ 、 VooV Meeting)",
+                Security: "➭ Security (network access assistant 、 antivirus 、 first aid kit 、 sfakiller tool)",
+                otherTitle: "➭Others (Email 、 PDF Reader 、Browser 、Compression 、Input Method 、Remote Tools、printer driver)",
+                convertTitle: "➭Conversion Tools (Audio 、Video 、Image 、Document)",
+
+                // Footer
+                dataSource: "&copy; 2020-2026 C&D Software Download Center | Data Source: Digital Center and Official Software Platforms. For inquiries, please contact Wang Chunshui(7279) or Wu Meihai(7293) from Digital Center",
+                updateTime: "Software Update Time: May 22, 2026",
+                contact: "Contact Us: ",
+
+                // Common buttons
+                localDownload: "Local Download",
+                officialDownload: "Official Download",
+                installGuide: "Install Guide",
+                onlineUse: "Online Use",
+                onlineTranslate: "online Translate",
+                onlineConvert: "Online Convert",
+                userGuide: "User Guide",
+                downloads: "Downloads",
+                useCount: "Use Count",
+                fileSize: "Size",
+                windowsVersion: "Windows Version",
+                macOSVersion: "MacOS Version",
+                uosVersion: "UOS Version",
+                moreVersion: "more Version",
+                officialwebsiteVersion: "officialwebsite Version",
+                cndwpsVersion: "cndwps365 Version",
+                localversion: "offlineinstallation",
+                onlineversion: "onlineinstallation",
+
+
+                // Software info
+                cndErpTooltip: 'C&D ERP<br>This software is compatible with Windows 8, Windows 10, and Windows 11 systems.<br>Download on mobile devices: Enterprise WeChat - Workbench - Share Co. APP',
+                cndVpnTooltip: 'C&D VPN<br>Designed for remote access to the company\'s internal network when away from the office or at home<br>Supported platforms: Windows system, MAC system',
+                cndLightwanTooltip: 'C&D Lightwan<br>Suitable for accelerating cross-border internet access (domestic access to overseas websites; overseas employees accessing the company\'s intranet).<br>Supported platforms: Windows system, MAC system',
+                cndPanTooltip: 'C&D Cloud Drive<br>Used for company data storage, internal/external sharing, collaborative editing<br>Supported platforms: Windows, MAC, Linux, iOS, Android',
+                cndWpsTooltip: 'WPS C&D Inc. Basic Edition (Ready to use after installation)<br>Includes: WPS Writer, WPS Spreadsheets, WPS Presentation Supported platforms: Windows, macOS, Linux',
+                wps365Tooltip: 'WPS 365 C&D Inc. Edition(Login required via WeChat Work QR code after installation)<br>Includes: WPS Writer, WPS Spreadsheets, WPS Presentation, WPS PDF Editor, and AI applications Supported platforms: Windows, macOS, Linux, iOS, Android',
+                jfzhilianTooltip: 'JH Chain ERP<br>Supported platforms: Windows 8 and above',
+                jsdtbTooltip: 'JSD Hedging Trading System<br>E-period futures unified trading platform<br>Supported platforms: Windows',
+                jsdtbv1Tooltip: 'C&D Hedging Trading System (including operations management)<br>E-period futures unified trading platform<br>Supported platforms: Windows',
+                jfvdiTooltip: 'C&D VDI<br>Used for overseas employees to access the company\'s internal network<br>Supported platforms: Windows',
+                weixinWorkTooltip: 'WeChat Work<br>Used for enterprise internal instant messaging<br>Supported platforms: Windows, MAC, iOS, Android',
+                feishuTooltip: 'Feishu<br>Used for enterprise internal instant messaging<br>Supported platforms: Windows, MAC, iOS, Android',
+                weixinTooltip: 'WeChat<br>A cross-platform messaging tool<br>Supported platforms: Windows, MAC, iOS, Android',
+                tencentMeetingTooltip: 'Tencent Meeting<br>Allows you to experience HD smooth meetings and meeting recording anytime, anywhere<br>Supported platforms: Windows, MAC, iOS, Android',
+                zoomTooltip: 'Zoom(pay)<br>Zoom Workplace is an intelligent collaboration platform launched by Zoom<br>Supporting video meetings, instant messaging, file sharing and whiteboard collaboration<br>Supported platforms: Windows',
+                teamsTooltip: 'Microsoft Teams(pay)<br>Use Teams to communicate and collaborate with anyone, anytime, anywhere<br>Supported platforms: Windows, MAC, iOS, Android',
+                cndVideoConfTooltip: 'C&D Video Conference<br>Used to meet privately and exclusively within C&D\'s internal network<br>Supported platforms: Windows system',
+                qqTooltip: 'QQ<br>An instant messaging tool<br>Supported platforms: Windows, MAC, iOS, Android',
+                foxmailTooltip: 'Foxmail<br>A comprehensive and easy-to-use email client software<br>Supported platforms: Windows',
+                coremailTooltip: 'Coremail Client<br>Powerful email features including email recall, Chinese mail, todo, delivery status query, PST import, signatures, etc.<br>Supported platforms: Windows',
+                antivirusTooltip: 'C&D 360<br>Dedicated antivirus software for company internal network computers<br>Supported platforms: Windows, MAC, Domestic OS',
+                networkAccessTooltip: 'C&D Network Access<br>Currently this access application is applicable to all company internal networks (including platform companies, subsidiary offices)<br>Supported platforms: Windows, MAC, Domestic OS',
+                sfakillerTooltip: 'sfakiller<br>Suitable for Silver Fox specialized killing software, it has more accurate killing, detection, and rapid disposal capabilities. Using the supported platform: Windows system。',
+                EmergencyTooltip: 'The 360 system first aid kit<br> supports the detection and killing of malignant viruses on computers, <br>including driver and MBR types, and also supports scanning and removing stubborn Trojans on Android phones. <br>Using the supported platform: Windows system',
+                adobeTooltip: 'Adobe Acrobat Reader<br>A powerful PDF reader<br>Supported platforms: Windows system',
+                '360zipTooltip': '360zip(has ads)<br>A powerful compression software<br>Supported platforms: Windows, MAC, Linux, iOS, Android',
+                '7-zip': '7-Zip is a file archiver with a high compression ratio.<br>Supported platforms: Windows',
+                chromeTooltip: 'Google Chrome<br>A fast, secure, and free web browser<br>Supported platforms: Windows, MAC, Linux, iOS, Android',
+                sogouInputTooltip: 'sogouInput(has ads and plugin)<br>A powerful Chinese input method<br>Supported platforms: Windows, MAC, iOS, Android',
+                WeChatInputTooltip: 'WeChat Input Method (Ad free)<br> is an ad free input method that is extremely simple.<br> Supported platforms: Windows system, MAC system iOS、Android',
+                vatReaderTooltip: 'VAT electronic invoice reader<br>A powerful VAT invoice reader<br>Supported platform: Windows system',
+                sunloginTooltip: 'Sunlogin<br>A powerful remote control software<br>Supported platforms: Windows, MAC, iOS, Android, Linux, Raspberry Pi',
+                sfExpressTooltip: 'Shunfa Printing is the official printing software designated by SF Express.<br>It is a software developed based on the pure printing requirements scenario, featuring multiple functions such as batch printing, grab-printing, abnormal item handling, cloud printing, etc.<br>There is no need for membership; registration is sufficient for free use.<br>Supported platforms: Windows system.',
+                printerDriverTooltip: 'The software is compatible with Windows 8, Windows 10, and Windows 11 systems.',
+                pdfgearTooltip: 'PDFgear<br>A powerful and free PDF editor with features including PDF editing, conversion, merging, splitting, and compression<br>Supported platforms: Windows, MAC',
+                stirlingPdfTooltip: 'StirlingPDF<br>A powerful free online PDF tool for editing, converting to Word/Excel/PPT, merging and splitting PDFs<br>Supported platforms: All platforms',
+                onlineConvertTooltip: 'Convertio（Please do not upload important data）<br>A powerful online file conversion tool supporting audio, video, image and document formats<br>Supported platforms: All platforms',
+                onlineTranslateTooltip: 'Online Translation<br>An integrated translation tool combining Baidu, Microsoft and iFlytek, supporting text, image and document translation<br>Supported platforms: All platforms',
+                oneClickDeployTooltip: 'One-click Deployment Script<br>Quick and automatic installation assistant tool for newly installed computers, including commonly used software<br>Supported platforms: Windows system',
+                qqpinyin: 'QQ Pinyin Input Method is a convenient, efficient, and intelligent Pinyin input tool with a rich dictionary and support for personalized settings.<br>Supported platforms: Windows system、Android',
+                PotPlayer: 'PotPlayer<br>This free Windows multimedia player boasts features such as a powerful built-in decoder, hardware acceleration support, compatibility with 4K/HDR/3D video, no ads, high customizability, and streaming media playback.<br>Supported platforms: Windows',
+                todesk: 'ToDesk is a cross-platform remote control software developed by Hainan Youqu Technology Co., Ltd. <br>It supports systems such as Windows, macOS, Linux, Android, iOS, and HarmonyOS, <br>providing remote desktop control and multi-scenario applications (such as remote office, equipment maintenance, and remote gaming)',
+            },
+            zh: {
+                // 导航
+                navTitle: "软件下载中心",
+                navScroll: "本网站始终坚持使用正版、尊重知识产权，严格依法采购、管理计算机软件，杜绝盗版与侵权使用，保障信息安全与合规。",
+                navWebsites: "➭网站导航",
+                navInternal: '内部网',
+                navEmail: '公司邮箱',
+                navEJianxueWeb: 'E建学Web',
+
+                // 分类
+                officeTitle: "➭办公（ERP、VPN、云盘、WPS）",
+                imTitle: "➭即时通讯（企业微信、飞书、微信、QQ、会议）",
+                Security: "➭安全（入网小助手、杀毒、急救箱、银狐专杀工具）",
+                otherTitle: "➭其它（邮箱、阅读器、浏览器、解压缩、输入法、远程工具、打印驱动)",
+                convertTitle: "➭转换工具（音频、视频、图像、文档）",
+
+                // 页脚
+                dataSource: "&copy; 2020-2026 建发股份软件下载中心 | 数据来源：数字化中心及各大软件平台官方网站，如有疑问可咨询数字化中心王春水(7279)、吴美海(7293)",
+                updateTime: "软件更新时间：2026年05月22日",
+                contact: "联系我们：",
+
+                // 通用按钮
+                localDownload: "本地下载",
+                officialDownload: "官网下载",
+                installGuide: "安装教程",
+                onlineUse: "在线使用",
+                onlineTranslate: "在线翻译",
+                onlineConvert: '在线转换',
+                userGuide: "使用教程",
+                downloads: "下载量",
+                useCount: '使用次数',
+                fileSize: "软件大小",
+                windowsVersion: "Windows版本",
+                macOSVersion: "MacOS版本",
+                uosVersion: "统信版本",
+                moreVersion: "更多版本",
+                officialwebsiteVersion: "官方版本",
+                cndwpsVersion: "股份版本",
+                localversion: "离线安装包",
+                onlineversion: "在线安装包",
+                
+
+                // 软件信息
+                cndErpTooltip: '建发股份ERP<br>该软件适用于Windows8、Windows10、Windows11系统<br>手机端下载：企业微信-工作台-股份APP',
+                cndVpnTooltip: '建发股份VPN<br>适用于外出或在家远程访问公司内部网络使用<br>支持平台：Windows系统、MAC系统',
+                cndLightwanTooltip: '建发股份Lightwan<br>适用于跨境访问互联网（国内访问海外网站；海外员工访问公司内部网络）加速<br>支持平台：Windows系统、Linux系统、MAC系统、iOS、Android',
+                cndPanTooltip: '建发股份云盘<br>适用于股份数据存储、内外分享、协同编辑等<br>支持平台：Windows系统、MAC系统、Linux、iOS、Android',
+                cndWpsTooltip: 'WPS建发股份基础版（安装即可使用）<br>包含wps文字、wps表格、wps演示、<br>支持平台：Windows系统、MAC系统、Linux',
+                wps365Tooltip: 'wps365建发股份版（需股份企微扫码授权）<br>包含wps文字、wps表格、wps演示、wpsPDF编辑、AI应用<br>支持平台：Windows系统、MAC系统、Linux、iOS、Android、鸿蒙',
+                jfzhilianTooltip: '建合智链ERP<br>支持平台：windows8以上系统',
+                jsdtbTooltip: '金仕达套保交易管理系统<br>E期发期货统一交易平台<br>支持平台：Windows系统',
+                jsdtbv1Tooltip: '建发套期保值交易系统（含运营管理）<br>E期发期货统一交易平台<br>支持平台：Windows系统',
+                jfvdiTooltip: '建发股份VDI<br>用于海外员工访问公司内部网络<br>支持平台：Windows系统',
+                weixinWorkTooltip: '企业微信<br>用于企业内部即时通讯软件<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                feishuTooltip: '飞书<br>用于企业内部即时通讯软件<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                weixinTooltip: '微信<br>一款跨平台的通讯工具<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                tencentMeetingTooltip: '腾讯会议<br>让您能随时随地无限时体验高清流畅的会议以及会议录制<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                zoomTooltip: 'Zoom（付费）<br>Zoom Workplace是由Zoom推出的智能协作平台<br>支持视频会议、即时通讯、文件共享及白板协作<br>支持平台：Windows系统',
+                teamsTooltip: 'Microsoft Teams（付费）<br>使用 Teams 随时随地与任何人沟通和协作<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                cndVideoConfTooltip: '建发视频会议<br>用于满足建发内网专属、私密会议<br>支持平台：Windows系统',
+                qqTooltip: 'QQ<br>即时通讯软件<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                foxmailTooltip: 'Foxmail<br>一款功能全面、易用便捷的电子邮件客户端软件<br>支持平台：Windows系统',
+                coremailTooltip: 'Coremail论客邮箱客户端<br>强大的邮件功能，包括邮件召回、中文邮、邮件待办、投递状态查询、PST文件导入、签名档等<br>支持平台：Windows系统',
+                antivirusTooltip: '360建发股份<br>适用于股份内网电脑终端专用杀毒软件<br>支持平台：Windows系统、MAC系统、国产系统',
+                networkAccessTooltip: '建发股份入网小助手<br>目前该准入应用适用于全股份内网（含异地平台公司、子公司办事处），<br>使用支持平台：Windows系统、MAC系统、国产系统',
+                sfakillerTooltip: '银狐专杀工具<br>适用于银狐专杀软件，更为精准的查杀、检测、快速的处置能力。<br>使用支持平台：Windows系统。',
+                EmergencyTooltip: '360系统急救箱<br>支持查杀电脑恶性病毒，包含驱动型及MBR型，同时支持扫描清除安卓手机顽固木马。<br>使用支持平台：Windows系统。',
+                adobeTooltip: 'Adobe Acrobat Reader<br>一款功能强大的PDF阅读器<br>支持平台：Windows系统',
+                '360zipTooltip': '360压缩（有广告）<br>一款功能强大的压缩软件<br>支持平台：Windows系统',
+                '7-zip': '7-Zip是一款压缩率很高的文件压缩软件。<br>支持平台：Windows系统',
+                chromeTooltip: 'Google Chrome<br>一款由Google公司开发的免费网页浏览器<br>支持平台：Windows系统',
+                sogouInputTooltip: '搜狗输入法（有广告，有插件）<br>一款功能强大的中文输入法<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                WeChatInputTooltip: '微信输入法（无广告）<br>一款无广告的输入法，极致简约的输入法<br>支持平台：Windows系统、MAC系统、iOS、Android',
+                vatReaderTooltip: '增值税电子发票阅读器<br>一款功能强大的增值税发票阅读器<br>支持平台：Windows系统',
+                sunloginTooltip: '向日葵<br>一款功能强大的远程控制软件<br>支持平台：Windows系统、MAC系统、iOS、Android、Linux、树莓派等',
+                sfExpressTooltip: '顺发打单是顺丰官方指定的打单软件<br>是一款基于纯打单需求场景研发的，包括批量打印、抓单打印、异常件处理、云打印等多种功能，无需会员，注册即可免费使用<br>支持平台：Windows系统',
+                printerDriverTooltip: '软件适用于Windows8、Windows10、Windows11系统,股份打印机驱动集合',
+                pdfgearTooltip: 'PDFgear<br>一款功能强大且免费的PDF编辑器，支持PDF编辑、PDF转换、PDF合并、PDF分割、PDF压缩等多种功能<br>支持平台：Windows系统、MAC系统',
+                stirlingPdfTooltip: 'StirlingPDF<br>一款功能强大且无需安装免费的私有化在线pdf编辑、pdf转word、excel、ppt、文件转PDF、合并拆分PDF等工具<br>支持平台：全平台系统',
+                onlineConvertTooltip: 'Convertio（重要数据请勿上传）<br>一款功能强大的在线文件转换工具，支持音频、视频、图像、文档等多种格式的转换<br>支持平台：全平台系统',
+                onlineTranslateTooltip: '在线翻译<br>一款集成百度、微软、讯飞翻译工具同时支持文本、图片、文档翻译<br>支持平台：全平台系统',
+                oneClickDeployTooltip: '一键部署脚本<br>针对新安装的电脑一键快速自动安装辅助工具、里面包含股份常用软件<br>支持平台：Windows系统',
+                qqpinyin: 'QQ拼音输入法<br>一款便捷高效、词库丰富且支持个性化设置的智能拼音输入工具<br>支持平台：Windows系统、Android',
+                PotPlayer: 'PotPlayer<br>免费Windows多媒体播放器，凭借内置强大解码器、支持硬件加速、兼容4K/HDR/3D视频、无广告、高定制性及流媒体播放等功能<br>支持平台：Windows系',
+                todesk:'ToDesk是由海南有趣科技有限公司开发的跨平台远程控制软件，<br>支持Windows、macOS、Linux、Android、iOS、HarmonyOS等系统，<br>提供远程桌面控制及多场景应用（如远程办公、设备维护、远程游戏）',
+            }
+        };
+
+        // 链接转换
+        var hrefTranslation = {
+            en: {
+                // CND ERP
+                cndErpWindowsVersion: 'app/CND ERP.exe',
+                cndErpMacOSVersion: 'app/CND ERP.dmg',
+                cndErpUosVersion: 'app/CND ERP.zip',
+                // CND VPN
+                cndVpn: 'https://vpn.chinacnd.com/',
+                // CND Lightwan
+                cndLightwan: 'https://www.lightwan.com.cn/resources/#download',
+                // CND Pan
+                cndPanWindowsVersion: 'app/建发股份云盘_All_Windows_x64-7.0.6.7-20260210-Release-2218.exe ',
+                cndpanMacOSVersion: 'app/AnyShare_All_Mac_x64-7.0.6.7-20260210-Release-853.dmg ',
+                cndPanUosVersion: 'app/signed_cn.aishu.anyshare_7.0.6.7-527-amd64-260310.deb ',
+                cndpanmoreVersion: 'https://yunpan.chinacnd.com/anyshare/zh-cn/ ',
+                // CND WPS企业版
+                cndWps: 'app/WPS企业版.exe',
+                // WPS 365
+                cndwps365Version: 'https://work.wps.cn/download/2z4xvuqqjcyBlTJu',
+                officialwebsiteVersion: 'https://365.wps.cn/download365',
+                // 建合智链
+                jfzhilianWindowsVersion: 'app/建合智链ERP.exe',
+                jfzhilianMacOSVersion: 'app/建合智链ERP正式库.dmg',
+                // 金仕达套保交易管理系统
+                jsdtb: 'app/金仕达套保交易管理系统V2.exe',
+                // 金仕达套保交易管理系统 V1
+                jsdtbv1: 'app/金仕达套保交易管理系统V1.7z',
+                // 建发股份VDI
+                jfvdi: 'https://vdi.chinacnd.com/por/login_psw.csp',
+                // 企业微信
+                weixinWork: 'https://work.weixin.qq.com/#indexDownload',
+                // 飞书
+                feishu: 'https://www.feishu.cn/en/#en_home_download_block',
+                // 微信
+                weixin: 'https://pc.weixin.qq.com/',
+                // 腾讯会议
+                tencentMeeting: 'https://voovmeeting.com/download-center.html',
+                // Zoom
+                zoom: 'app/ZoomInstallerFull.exe',
+                // Teams
+                teams: 'app/MSTeamsSetup.exe',
+                // 建发视频会议
+                cndVideoConf: 'https://172.23.50.50/manager/download',
+                // QQ
+                qq: 'https://im.qq.com/pcqq/index.shtml',
+                // Foxmail
+                foxmail: 'https://www.foxmail.com/',
+                // Coremail
+                coremail: 'app/cmclient.exe',
+                // 360杀毒
+                antivirus: 'https://360.chinacnd.com/dist/static/download/index.html',
+                // 网络准入
+                networkAccessWindowsVersion: 'app/172.18.7.3_80_http_IsSetup_Agent.exe',
+                networkAccessMacOSVersion: 'app/asm_mac.zip',
+                networkAccessUosVersion: 'app/172.18.7.3_80_http_0_IsaHelpLinuxAgent_uos_x86_64.deb',
+                networkAccessmoreVersion: 'https://yunpan.chinacnd.com/link/AAB43E42548C424CCF8DD4A78B4E9900CF',
+                // 银狐专杀
+                sfakiller: 'app/sfakiller_x64.exe',
+                // 360急救箱
+                Emergency: 'https://weishi.360.cn/jijiuxiang/index.html',
+                // Adobe Acrobat Reader
+                adobe: 'https://get.adobe.com/reader/',
+                // 360压缩
+                '360zip': 'https://yasuo.360.cn/',
+                // 7-zip
+                '7-zip': 'app/7-zip.exe',
+                // Chrome
+                offlineinstallation: 'app/ChromeStandaloneSetup64.exe',
+                onlineinstallation: 'https://www.google.cn/intl/zh-CN/chrome/',
+                // 搜狗输入法
+                sogouInput: 'https://shurufa.sogou.com/windows',
+                // 微信输入法
+                WeChatInput: 'https://z.weixin.qq.com/',
+                // 增值税电子发票阅读器
+                vatReader: 'app/增值税电子发票阅读器.exe',
+                // 向日葵
+                sunlogin: 'https://sunlogin.oray.com/download',
+                // 顺丰打单
+                sfExpress: 'https://sd.sf-express.com/#/download',
+                // 打印机驱动
+                printerDriver: 'https://yunpan.chinacnd.com/link/AAE9129A62987E4D9F946003E26276DE12',
+                // PDFgear
+                pdfgear: 'app/pdfgear.exe',
+                // Stirling PDF
+                stirlingPdf: 'http://soft.com:8080/?lang=en_GB',
+                // 在线转换
+                onlineConvert: 'https://convertio.co/en/',
+                // 在线翻译
+                onlineTranslate: 'https://jftranslate.chinacdc.com/translation',
+                // 一键部署
+                oneClickDeploy: 'app/360准入一键部署包.exe',
+                //QQ拼音输入法
+                qqpinyin: 'https://qq.pinyin.cn/',
+                //PotPlayer
+                PotPlayer: 'app/PotPlayerSetup64.exe',
+                //todesk
+                todesk: 'https://www.todesk.com/download.html',
+            },
+            zh: {
+                // CND ERP
+                cndErpWindowsVersion: 'app/CND ERP.exe',
+                cndErpMacOSVersion: 'app/CND ERP.dmg',
+                cndErpUosVersion: 'app/CND ERP.zip',
+                // CND VPN
+                cndVpn: 'https://vpn.chinacnd.com/',
+                // CND Lightwan
+                cndLightwan: 'https://www.lightwan.com.cn/resources/#download',
+                // CND Pan
+                cndPanWindowsVersion: 'app/建发股份云盘_All_Windows_x64-7.0.6.7-20260210-Release-2218.exe ',
+                cndpanMacOSVersion: 'app/AnyShare_All_Mac_x64-7.0.6.7-20260210-Release-853.dmg ',
+                cndPanUosVersion: 'app/signed_cn.aishu.anyshare_7.0.6.7-527-amd64-260310.deb',
+                cndpanmoreVersion: 'https://yunpan.chinacnd.com/anyshare/zh-cn/',
+                // CND WPS企业版
+                cndWps: 'app/WPS企业版.exe',
+                cndwps365Version: 'https://work.wps.cn/download/2z4xvuqqjcyBlTJu',
+                officialwebsiteVersion: 'https://365.wps.cn/download365',
+                // 建合智链
+                jfzhilianWindowsVersion: 'app/建合智链ERP.exe',
+                jfzhilianMacOSVersion: 'app/建合智链ERP正式库.dmg',
+                // 金仕达套保交易管理系统
+                jsdtb: 'app/金仕达套保交易管理系统V2.exe',
+                // 金仕达套保交易管理系统 V1
+                jsdtbv1: 'app/金仕达套保交易管理系统V1.7z',
+                // 建发股份VDI
+                jfvdi: 'https://vdi.chinacnd.com/por/login_psw.csp',
+                // 企业微信
+                weixinWork: 'https://work.weixin.qq.com/#indexDownload',
+                // 飞书
+                feishu: 'https://www.feishu.cn/download',
+                // 微信
+                weixin: 'https://pc.weixin.qq.com/',
+                // 腾讯会议
+                tencentMeeting: 'https://meeting.tencent.com/download/',
+                // Zoom
+                zoom: 'app/ZoomInstallerFull.exe',
+                // Teams
+                teams: 'app/MSTeamsSetup.exe',
+                // 建发视频会议
+                cndVideoConf: 'https://172.23.50.50/manager/download',
+                // QQ
+                qq: 'https://im.qq.com/pcqq/index.shtml',
+                // Foxmail
+                foxmail: 'https://www.foxmail.com/',
+                // Coremail
+                coremail: 'app/cmclient.exe',
+                // 360杀毒
+                antivirus: 'https://360.chinacnd.com/dist/static/download/index.html',
+                // 网络准入
+                networkAccessWindowsVersion: 'app/172.18.7.3_80_http_IsSetup_Agent.exe',
+                networkAccessMacOSVersion: 'app/asm_mac.zip',
+                networkAccessUosVersion: 'app/172.18.7.3_80_http_0_IsaHelpLinuxAgent_uos_x86_64.deb',
+                networkAccessmoreVersion: 'https://yunpan.chinacnd.com/link/AAB43E42548C424CCF8DD4A78B4E9900CF',
+                // 银狐专杀
+                sfakiller: 'app/sfakiller_x64.exe',
+                // 360急救箱
+                Emergency: 'https://weishi.360.cn/jijiuxiang/index.html',
+                // Adobe Acrobat Reader
+                adobe: 'app/AdobePDF阅读器.exe',
+                // 360压缩
+                '360zip': 'https://yasuo.360.cn/',
+                // 7-zip
+                '7-zip': 'app/7-zip.exe',
+                // Chrome
+                offlineinstallation: 'app/ChromeStandaloneSetup64.exe',
+                onlineinstallation: 'https://www.google.cn/intl/zh-CN/chrome/',
+                // 搜狗输入法
+                sogouInput: 'https://shurufa.sogou.com/windows',
+                // 微信输入法
+                WeChatInput: 'https://z.weixin.qq.com/',
+                // 增值税电子发票阅读器
+                vatReader: 'app/增值税电子发票阅读器.exe',
+                // 向日葵
+                sunlogin: 'https://sunlogin.oray.com/download',
+                // 顺丰打单
+                sfExpress: 'https://sd.sf-express.com/#/download',
+                // 打印机驱动
+                printerDriver: 'https://yunpan.chinacnd.com/link/AAE9129A62987E4D9F946003E26276DE12',
+                // PDFgear
+                pdfgear: 'app/pdfgear.exe',
+                // Stirling PDF
+                stirlingPdf: 'http://soft.com:8080/?lang=zh_CN',
+                // 在线转换
+                onlineConvert: 'https://convertio.co/zh/',
+                // 在线翻译
+                onlineTranslate: 'https://jftranslate.chinacdc.com/translation',
+                // 一键部署
+                oneClickDeploy: 'app/360准入一键部署包.exe',
+                //QQ拼音输入法
+                qqpinyin: 'https://qq.pinyin.cn/',
+                //PotPlayer
+                PotPlayer: 'app/PotPlayerSetup64.exe',
+                //todesk
+                todesk: 'https://www.todesk.com/download.html',
+            }
+        };
+
+        // 切换语言的函数
+        function changeLanguage(lang) {
+            currentLang = lang;
+            // 保存用户选择的语言到本地存储
+            localStorage.setItem(USER_LANG_KEY, lang);
+
+            // 更新语言选择器的选中状态
+            const languageSelector = document.querySelector('.language-selector');
+            if (languageSelector) {
+                languageSelector.value = lang;
+            }
+
+            const i18nElements = document.querySelectorAll('[data-i18n]');
+            const hrefElements = document.querySelectorAll('[data-href]');
+
+            // 添加过渡效果类
+            i18nElements.forEach(element => {
+                element.style.opacity = '0'
+            })
+
+            // 更新链接
+            hrefElements.forEach(element => {
+                const href = element.getAttribute('data-href');
+                const hrefTranslationValue = hrefTranslation[lang][href];
+                if (!hrefTranslationValue) console.warn('未找到' + href + '的' + lang + '翻译')
+                element.setAttribute('href', hrefTranslationValue);
+            })
+
+
+            setTimeout(() => {
+                // 更新页面语言
+                document.documentElement.lang = lang;
+
+                i18nElements.forEach(element => {
+                    // 重置过渡效果
+                    element.style.opacity = '1'
+                    const key = element.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        element.innerHTML = translations[lang][key];
+                    }
+                });
+            }, 200)
+        }
+
+        // 检测浏览器语言并设置初始语言
+        function detectBrowserLanguage() {
+            // 1. 检查本地存储中是否有用户之前选择的语言
+            const savedLanguage = localStorage.getItem(USER_LANG_KEY);
+            if (savedLanguage) {
+                return savedLanguage;
+            }
+
+            // 2. 如果没有保存的语言，则检测浏览器语言
+            const browserLanguage = navigator.language || navigator.userLanguage;
+
+            // 3. 简化处理：只检查语言代码的前两位
+            const languageCode = browserLanguage.split('-')[0];
+
+            // 4. 如果检测到中文，返回'zh'，否则返回'en'
+            return languageCode === LANG_CODES.ZH ? LANG_CODES.ZH : LANG_CODES.EN;
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('[data-i18n]');
+
+            // 添加过渡效果类
+            elements.forEach(element => {
+                element.classList.add('language-transition')
+            })
+
+            // 设置初始语言
+            const initialLanguage = detectBrowserLanguage();
+            changeLanguage(initialLanguage);
+
+            // 为语言选择器添加事件监听器
+            const languageSelector = document.querySelector('.language-selector');
+            languageSelector.addEventListener('change', (e) => {
+                changeLanguage(e.target.value);
+            });
+        });</script>
+
+</body>
+
+</html>

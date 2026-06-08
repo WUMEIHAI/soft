@@ -1,0 +1,19 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Tahoma, Arial, 'Microsoft YaHei',
+    'PingFang SC', sans-serif;
+  font-weight: 400;
+  white-space: normal;
+  width: 800px;
+  margin: 40px auto;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 400;
+}
+
+a:link,
+a:visited {
+  text-decoration: underline;
+  color: #369;
+}
